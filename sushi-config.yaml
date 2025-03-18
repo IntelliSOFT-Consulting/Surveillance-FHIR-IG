@@ -43,9 +43,24 @@ publisher:
 # with supported extensions (e.g., .md/.xml) will be treated as
 # sub-pages.
 #
-# pages:
-#   index.md:
-#     title: Example Home
+pages:
+  index.md:
+    title: Example Home
+  # business-.md:
+  #   title: Business Requirements
+  generic-personas.md:
+    title: Generic Personas
+  concepts.md:
+    title: Concepts
+  decision-support.md:
+    title: Decision Suport
+  functional-requirements.md:
+    title: Functional Requirements 
+  non-functional-requirements.md:
+    title: Non Functional Requirements
+  user-scenarios.md:
+    title: User Scenarios  
+
 #   implementation.xml:
 #   examples.xml:
 #     title: Examples Overview
@@ -76,7 +91,10 @@ publisher:
 # ╰────────────────────────────────────────────────────────────────────────────────────────────────╯
 menu:
   Home: index.html
-  Artifacts: artifacts.html
+  Technical Specifications: artifacts.html
+  Business Requirements: business-processes.html
+  
+
 
 # ╭───────────────────────────Less Common Implementation Guide Properties──────────────────────────╮
 # │  Uncomment the properties below to configure additional properties on the ImplementationGuide  │
