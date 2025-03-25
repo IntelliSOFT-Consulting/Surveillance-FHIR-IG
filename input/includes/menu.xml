@@ -6,16 +6,17 @@
       <li><a href="#">Changes</a></li>
     </ul>
   </li>
-   <li class="dropdown">
+  <li class="dropdown">
     <a data-toggle="dropdown" href="business-requirements.html" class="dropdown-toggle">Business Requirements<b class="caret"></b></a>
     <ul class="dropdown-menu">
-      <li><a href="concepts.html">Concepts</a></li>
-      <li><a href="generic-personas.html">Generic Personas</a></li>
+      <li><a href="business-requirements.html">Generic Personas</a></li>
       <li><a href="user-scenarios.html">User Scenarios</a></li>
-      <li><a href="business-processes.html">Business Processes And Workflows</a></li>
+      <li><a href="business-processes.html">Business Processes and Workflows</a></li>
+      <li><a href="concepts.html">Core Data Elements</a></li>
       <li><a href="decision-support.html">Decision Support Logic</a></li>
+      <li><a href="perfomance-metrics.html">Indicators and Perfomance Metrics</a></li>
       <li><a href="functional-requirements.html">Functional Requirements</a></li>
-      <li><a href="non-functional-requirements.html">Non-Functional Requirements</a></li>
+      <li><a href="non-functional-requirements.html">Non Functional Requirements</a></li>
     </ul>
   </li>
    <li class="dropdown">
