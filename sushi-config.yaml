@@ -45,9 +45,11 @@ publisher:
 #
 pages:
   index.md:
-    title: Example Home
-  # business-.md:
-  #   title: Business Requirements
+    title: Home
+  business-requirements.md:
+    title: Business Requirements
+  business-processes.md:
+    title: Business Processes
   generic-personas.md:
     title: Generic Personas
   concepts.md:
@@ -60,6 +62,8 @@ pages:
     title: Non Functional Requirements
   user-scenarios.md:
     title: User Scenarios  
+  perfomance-metrics.md:
+    title: Indicators And Perfomance Metrics  
 
 #   implementation.xml:
 #   examples.xml:
