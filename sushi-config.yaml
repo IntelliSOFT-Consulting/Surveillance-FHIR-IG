@@ -6,8 +6,8 @@
 id: fhir.surveillanceIG
 canonical: http://example.org
 name: Surveillance-FHIR-IG
-# title: Example Title
-# description: Example Implementation Guide for getting started with SUSHI
+title: Kenya Disease Surveillance FHIR Implementation Guide. 
+description: IDSR Priority Diseases and Data Collection/ Reporting Requirements.
 status: draft # draft | active | retired | unknown
 version: 0.1.0
 fhirVersion: 4.0.1 # https://www.hl7.org/fhir/valueset-FHIR-version.html
@@ -109,13 +109,13 @@ menu:
 # contact directly and follow the format outlined in the ImplementationGuide resource and
 # ContactDetail.
 #
-# contact:
-#   - name: Bob Smith
-#     telecom:
-#       - system: email # phone | fax | email | pager | url | sms | other
-#         value: bobsmith@example.org
-#         use: work
-#
+contact:
+  - name: IntelliSOFT Consulting Ltd.
+    telecom:
+      - system: email # phone | fax | email | pager | url | sms | other
+        value: info@intellisoftkenya.com
+        use: work
+jurisdiction: urn:iso:std:iso:3166#KE "Kenya"
 #
 # The global property corresponds to the IG.global property, but it
 # uses the type as the YAML key and the profile as its value. Since
