@@ -329,13 +329,22 @@ This DAK focuses on key business processes conducted by the personas (described 
             </td>
     </tr>
     <tr>
-            <td><img title="Swim Lane" alt="Swim Lane" src="/input/images/swim_lane.png"/></td>
+            <td><img title="Pool" alt="Pool" src="/input/images/pool.png"/></td>
+            <td><strong>Pool</strong></td>
+            <td>
+            The pool assumes process control – in other words, it assigns the tasks. A pool consists of one or more “swim lanes” that depict all the individuals or types of users that are involved in carrying out the business process or workflow. Diagrams should be clear, neat and easy for all viewers to understand the relationships across the different swim lanes. For example, a pool would depict the business process of conducting an outreach activity, which involves multiple stakeholders represented by different lanes in that pool. <br>
+            A business process diagram can contain two or more pools that connect through message flows (messages received from outside of the pool). This indicates different process owners collaborating and exchanging information.
+            For example, in the case of a referral, the health facility “A” (the referring facility) represents the process owner that assigns internally the tasks for the actors represented as swim lanes in the pool.  The health facility “B” (the receiving facility) has allocated its own pool and it’s considered a different process owner, with the same role. These 2 facilities exchange information relevant for a referral (client history, referral details, etc.), represented as message flows, but each facility has control only over the internal activities, without directly impacting the activities of the other facility.
+            </td>
+    </tr>
+    <tr>
+            <td><img title="Swim Lane" alt="Swim Lane" src="swim_lane.png"/></td>
             <td><strong>Swim Lane</strong></td>
             <td>Each individual or type of user is assigned to a swim lane, a designated area for noting the activities performed or expected of that specific actor. For example, a family planning health worker may have one swim lane; the supervisor would be in another swim lane; the clients/patients would be classified in another swim lane. If the activities can be performed by either actor, then those activities can be depicted overlapping the two relevant swim lanes.
             </td>
     </tr>
     <tr>
-            <td><img title="Start event or Trigger Event" alt="Start event or Trigger Event" src="/input/images/start_event.png"/></td>
+            <td><img title="Start event or Trigger Event" alt="Start event or Trigger Event" src="start_event.png"/></td>
             <td><strong>Start event or Trigger Event</strong></td>
             <td>The workflow diagram should contain both a start and an end event, defining the beginning and completion of the task, respectively.</td>
     </tr>
@@ -345,17 +354,22 @@ This DAK focuses on key business processes conducted by the personas (described 
             <td>This is a type of a start event. In some instances, the workflow can start with a message. A “message” in business process model and notation does not mean only letters, emails or calls, but includes also information exchanged between 2 different systems, such as data exchange, notifications, etc. Any action that refers to a specific addressee and represents or contains information for the addressee is a message.</td>
     </tr>
     <tr>
-            <td><img title="End Event" alt="End Event" src="/input/images/end_event.png"/></td>
+            <td><img title="Start event message" alt="Start event message" src="/input/images/start_event_message.png"/></td>
+            <td><strong>Start event message</strong></td>
+            <td>This is a type of a start event. In some instances, the workflow can start with a message. A “message” in business process model and notation does not mean only letters, emails or calls, but includes also information exchanged between 2 different systems, such as data exchange, notifications, etc. Any action that refers to a specific addressee and represents or contains information for the addressee is a message.</td>
+    </tr>
+    <tr>
+            <td><img title="End Event" alt="End Event" src="end_event.png"/></td>
             <td><strong>End Event</strong></td>
             <td>There can be multiple end events depicted across multiple swimlanes in a business process diagram. However, for diagram clarity, there should only be one end event per swim lane.</td>
     </tr>
     <tr>
-            <td><img title="Activity, Process, Step or Task" alt="Activity, Process, Step or Task" src="/input/images/activity_task_process.png"/></td>
+            <td><img title="Activity, Process, Step or Task" alt="Activity, Process, Step or Task" src="activity_task_process.png"/></td>
             <td><strong>Activity, Process, Step or Task</strong></td>
             <td>Each activity should start with a verb, e.g. for example, “Register client”, or “Calculate risk”. Between the start and end of a task, there should be a series of activities noted - in the successive actions performed by the actor for that swim lane. There can also be sub-processes within each activity (see next row).</td>
     </tr>
     <tr>
-            <td><img title="Activity with sub-process" alt="Activity with sub-process" src="/input/images/activity_with_subprocess.png"/></td>
+            <td><img title="Activity with sub-process" alt="Activity with sub-process" src="activity_with_subprocess.png"/></td>
             <td><strong>Activity with sub-process</strong></td>
             <td>This symbol denotes an activity that has a much longer sub-process, to be detailed in another diagram. If the diagram starts to become too complex and unhelpful, the sub-process symbol should be used to reference this sub-another process depicted on another diagram page. (Activity with sub-process in grey box is not covered in this DAK).
             </td>
@@ -367,7 +381,13 @@ This DAK focuses on key business processes conducted by the personas (described 
             </td>
     </tr>
     <tr>
-            <td><img title="Sequence flow" alt="Sequence flow" src="/input/images/sequence_flow.png"/></td>
+            <td><img title="Activity with business rule" alt="Activity with business rule" src="/input/images/activity_with_business_rule.png"/></td>
+            <td><strong>Activity with business rule</strong></td>
+            <td>This denotes a decision-making activity that requires the business rule, decision-support logic or scheduling logic, to be detailed in a decision-support table. This means that the logic described in the decision-support table will come into play during this activity as outlined in the business process. This is usually reserved for complex decisions. 
+            </td>
+    </tr>
+    <tr>
+            <td><img title="Sequence flow" alt="Sequence flow" src="sequence_flow.png"/></td>
             <td><strong>Sequence flow</strong></td>
             <td>This symbol denotes the flow direction from one process to the next. The end event should not have any output arrows. All symbols (except Start event) may have an unlimited number of input arrows. All symbols (except End event and the Gateway) should have one and only one output arrow, leading to a new symbol, looping back to a previously used symbol, or pointing to the Eend event symbol. Connecting arrows should not intersect (cross) each other. 
             </td>
@@ -390,13 +410,13 @@ This DAK focuses on key business processes conducted by the personas (described 
             <td>The parallel gateway can be used to model concurrency in a process. This type of gateway allows forking into multiple paths of execution or joining multiple incoming paths of execution. An important difference with other gateway types is that the parallel gateway does not evaluate conditions. </td>
     </tr>
     <tr>
-            <td><img title="Throw – Link" alt="Throw – Link" src="/input/images/throw_link.png"/></td>
+            <td><img title="Throw – Link" alt="Throw – Link" src="throw_link.png"/></td>
             <td><strong>Throw – Link</strong></td>
             <td>The “Throw–Link” serves as the start of an off-page connector. It is the end of the process when there is no more room on your page for that workflow. It is the end of a process on your current page or the end of a sub-process that is part of a larger process. When used, there will need to be a corresponding “Catch–Link” on the other page that shows the continuation of the workflow.  that follows the “Throw–Link”. 
             </td>
     </tr>
     <tr>
-            <td><img title="Catch – Link" alt="Catch – Link" src="/input/images/catch_link.png"/></td>
+            <td><img title="Catch – Link" alt="Catch – Link" src="catch_link.png"/></td>
             <td><strong>Catch – Link</strong></td>
             <td>The “Catch–Link” serves as an off-page connector. It is the start of a new process that follows a previous process, a continuation of a process from a previous page,  on a different page from the “Throw – Link” or the start of a sub-process that is part of a larger process. Every “CatchLink” needs to align with at least one corresponding There needs to be a “Throw–Link” that is aligned to the prior process diagram “Catch – Link”. 
             </td>
@@ -408,7 +428,13 @@ This DAK focuses on key business processes conducted by the personas (described 
             </td>
     </tr>
     <tr>
-            <td><img title="Loop activity" alt="Loop activity" src="/input/images/loop_activity.png"/></td>
+            <td><img title="Ad hoc subprocess" alt="Ad Hoc subprocess" src="/input/images/ad_hoc_subprocess.png"/></td>
+            <td><strong>Ad hoc subprocess</strong></td>
+            <td>An ad hoc subprocess can contain multiple activities (tasks or subprocesses), which can be executed in any order, executed several times, or skipped. However, not all these activities need to be finished before moving on to the next activity.
+            </td>
+    </tr>
+    <tr>
+            <td><img title="Loop activity" alt="Loop activity" src="loop_activity.png"/></td>
             <td><strong>Loop activity</strong></td>
             <td>This “Loop Activity” or loop task symbolizes an activity or task that is repeated until it no longer needs to be repeated. For example, vaccine administration can happen as many times as the number of vaccines that need to be given. 
             </td>
