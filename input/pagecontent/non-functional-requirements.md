@@ -39,7 +39,7 @@
 | IDSR.NFXNREQ.038    | Usability                                 | Provide guidance to users to better support clinical guidelines and best clinical practices |
 | IDSR.NFXNREQ.039    | Usability                                 | Be reliable and robust (minimize the number of system crashes) |
 | IDSR.NFXNREQ.040    | Usability                                 | Adjust display to fit small screens (e.g., mobile phones) |
-| IDSR.NFXNREQ.041    | Reliability                               | Enable a task to be cancelled and rolled back to previous state |
+<!-- | IDSR.NFXNREQ.041    | Reliability                               | Enable a task to be cancelled and rolled back to previous state |
 | IDSR.NFXNREQ.042    | Reliability                               | Enable users to work offline and then synchronize data when data connection is available |
 | IDSR.NFXNREQ.043    | Reliability                               | Allow a task to be interrupted and resumed |
 | IDSR.NFXNREQ.044    | Reliability                               | Enable earlier versions of a record to be recoverable |
@@ -115,4 +115,4 @@
 | IDSR.NFXNREQ.114    | General | Support the ability to store images and other unstructured data|
 | IDSR.NFXNREQ.115    | Scalability  | Scalable to accommodate new demands |
 | IDSR.NFXNREQ.116    | Scalability  | Be able to accommodate at least [x number of] health-care facilities|
-| IDSR.NFXNREQ.117    | Scalability  | Be able to accommodate at least [x number of] concurrent users |
+| IDSR.NFXNREQ.117    | Scalability  | Be able to accommodate at least [x number of] concurrent users | -->

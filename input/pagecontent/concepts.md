@@ -76,6 +76,76 @@
             <td>PII</td>
             <td>Personal Identifiable Information</td>
         </tr>
+        <tr>
+            <td>13</td>
+            <td>BPMN</td>
+            <td>Business Process Model and Notation</td>
+        </tr>
+        <tr>
+            <td>14</td>
+            <td>DT</td>
+            <td>Decision Support Table</td>
+        </tr>
+        <tr>
+            <td>15</td>
+            <td>EMR</td>
+            <td>Electronic Medical Record</td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>HL7</td>
+            <td>Health Level 7</td>
+        </tr>
+        <tr>
+            <td>17</td>
+            <td>FHIR</td>
+            <td>Fast Healthcare Interoperability Resources</td>
+        </tr>
+        <tr>
+            <td>18</td>
+            <td>ICD</td>
+            <td>International Classification of Diseases</td>
+        </tr>
+        <tr>
+            <td>19</td>
+            <td>SNOMED</td>
+            <td>Systematized Nomenclature of Medicine</td>
+        </tr>
+        <tr>
+            <td>20</td>
+            <td>LOINC</td>
+            <td>Logical Observation Identifiers Names and Codes</td>
+        </tr>
+        <tr>
+            <td>21</td>
+            <td>ICD-11</td>
+            <td>International Classification of Diseases, 11th Revision</td>
+        </tr>
+        <tr>
+            <td>22</td>
+            <td>ICF</td>
+            <td>International Classification of Functioning, Disability and Health</td>
+        </tr>
+        <tr>
+            <td>23</td>
+            <td>ICHI</td>
+            <td>International Classification of Health Interventions</td>
+        </tr>
+        <tr>
+            <td>24</td>
+            <td>ID</td>
+            <td>Identification</td>
+        </tr>
+        <tr>
+            <td>25</td>
+            <td>PCPOSS</td>
+            <td>Person-centred Point of Care System</td>
+        </tr>
+        <tr>
+            <td>26</td>
+            <td>SCDSC</td>
+            <td>Sub-County Disease Surveillance Coordinator</td>
+        </tr>
     </tbody>
 </table>
 
