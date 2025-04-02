@@ -334,12 +334,12 @@ This DAK focuses on key business processes conducted by the personas (described 
             <td>Each individual or type of user is assigned to a swim lane, a designated area for noting the activities performed or expected of that specific actor. For example, a family planning health worker may have one swim lane; the supervisor would be in another swim lane; the clients/patients would be classified in another swim lane. If the activities can be performed by either actor, then those activities can be depicted overlapping the two relevant swim lanes.
             </td>
     </tr>
-    <!-- <tr>
+    <tr>
             <td><img title="Start event or Trigger Event" alt="Start event or Trigger Event" src="start_event.png"/></td>
             <td><strong>Start event or Trigger Event</strong></td>
             <td>The workflow diagram should contain both a start and an end event, defining the beginning and completion of the task, respectively.</td>
     </tr> -->
-    <!-- <tr>
+    <<tr>
             <td><img title="Start event message" alt="Start event message" src="start_event_message.png"/></td>
             <td><strong>Start event message</strong></td>
             <td>This is a type of a start event. In some instances, the workflow can start with a message. A “message” in business process model and notation does not mean only letters, emails or calls, but includes also information exchanged between 2 different systems, such as data exchange, notifications, etc. Any action that refers to a specific addressee and represents or contains information for the addressee is a message.</td>
@@ -367,12 +367,6 @@ This DAK focuses on key business processes conducted by the personas (described 
             </td>
     </tr>
     <tr>
-            <td><img title="Activity with business rule" alt="Activity with business rule" src="activity_with_business_rule.png"/></td>
-            <td><strong>Activity with business rule</strong></td>
-            <td>This denotes a decision-making activity that requires the business rule, decision-support logic or scheduling logic, to be detailed in a decision-support table. This means that the logic described in the decision-support table will come into play during this activity as outlined in the business process. This is usually reserved for complex decisions. 
-            </td>
-    </tr>
-    <tr>
             <td><img title="Sequence flow" alt="Sequence flow" src="sequence_flow.png"/></td>
             <td><strong>Sequence flow</strong></td>
             <td>This symbol denotes the flow direction from one process to the next. The end event should not have any output arrows. All symbols (except Start event) may have an unlimited number of input arrows. All symbols (except End event and the Gateway) should have one and only one output arrow, leading to a new symbol, looping back to a previously used symbol, or pointing to the Eend event symbol. Connecting arrows should not intersect (cross) each other. 
@@ -384,13 +378,13 @@ This DAK focuses on key business processes conducted by the personas (described 
             <td>This denotes the flow of data or information from one process to another. This is usually used for when data are shared across pools. 
             </td>
     </tr>
-    <!-- <tr>
+    <tr>
             <td><img title="Exclusive Gateway" alt="Gateway" src="exclusive_gateway.png"/></td>
             <td><strong>Exclusive Gateway</strong></td>
             <td>This symbol is used to depict a fork, or decision point, in the workflow, which may be a simple binary (e.g. yes/no) filter with two corresponding output arrows, or a different set of outputs. <br>
             There should only be two different outputs that originate from the decision point. If you find yourself needing more than two output or sequence flow arrows, you most likely are trying to depict decision-support logic or a business rule. This should be depicted as an activity with business rule (above) instead. </td>
     </tr> -->
-    <!-- <tr>
+    <tr>
             <td><img title="Parallel Gateway" alt="Parallel Gateway" src="parallel_gateway.png"/></td>
             <td><strong>Parallel Gateway</strong></td>
             <td>The parallel gateway can be used to model concurrency in a process. This type of gateway allows forking into multiple paths of execution or joining multiple incoming paths of execution. An important difference with other gateway types is that the parallel gateway does not evaluate conditions. </td>
@@ -491,6 +485,8 @@ Any signal that gets a “YES” response to all the three questions is subjecte
 <li>Any animal health care worker/ handler who develops an illness suspected to have been contracted from a sick animal.</li>
 </ul>
 </p>
+
+
 </div>
 
 ### Workflow G: Laboratory Surveillance business process
