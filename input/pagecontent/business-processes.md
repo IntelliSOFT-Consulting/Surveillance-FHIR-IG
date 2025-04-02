@@ -320,16 +320,7 @@ This DAK focuses on key business processes conducted by the personas (described 
     </thead>
     <tbody>
     <tr>
-            <td><img title="Pool" alt="Pool" src="/input/images/pool.png"/></td>
-            <td><strong>Pool</strong></td>
-            <td>
-            The pool assumes process control – in other words, it assigns the tasks. A pool consists of one or more “swim lanes” that depict all the individuals or types of users that are involved in carrying out the business process or workflow. Diagrams should be clear, neat and easy for all viewers to understand the relationships across the different swim lanes. For example, a pool would depict the business process of conducting an outreach activity, which involves multiple stakeholders represented by different lanes in that pool. <br>
-            A business process diagram can contain two or more pools that connect through message flows (messages received from outside of the pool). This indicates different process owners collaborating and exchanging information.
-            For example, in the case of a referral, the health facility “A” (the referring facility) represents the process owner that assigns internally the tasks for the actors represented as swim lanes in the pool.  The health facility “B” (the receiving facility) has allocated its own pool and it’s considered a different process owner, with the same role. These 2 facilities exchange information relevant for a referral (client history, referral details, etc.), represented as message flows, but each facility has control only over the internal activities, without directly impacting the activities of the other facility.
-            </td>
-    </tr>
-    <tr>
-            <td><img title="Pool" alt="Pool" src="/input/images/pool.png"/></td>
+            <td><img title="Pool" alt="Pool" src="pool.png"/></td>
             <td><strong>Pool</strong></td>
             <td>
             The pool assumes process control – in other words, it assigns the tasks. A pool consists of one or more “swim lanes” that depict all the individuals or types of users that are involved in carrying out the business process or workflow. Diagrams should be clear, neat and easy for all viewers to understand the relationships across the different swim lanes. For example, a pool would depict the business process of conducting an outreach activity, which involves multiple stakeholders represented by different lanes in that pool. <br>
@@ -343,21 +334,16 @@ This DAK focuses on key business processes conducted by the personas (described 
             <td>Each individual or type of user is assigned to a swim lane, a designated area for noting the activities performed or expected of that specific actor. For example, a family planning health worker may have one swim lane; the supervisor would be in another swim lane; the clients/patients would be classified in another swim lane. If the activities can be performed by either actor, then those activities can be depicted overlapping the two relevant swim lanes.
             </td>
     </tr>
-    <tr>
+    <!-- <tr>
             <td><img title="Start event or Trigger Event" alt="Start event or Trigger Event" src="start_event.png"/></td>
             <td><strong>Start event or Trigger Event</strong></td>
             <td>The workflow diagram should contain both a start and an end event, defining the beginning and completion of the task, respectively.</td>
-    </tr>
-    <tr>
-            <td><img title="Start event message" alt="Start event message" src="/input/images/start_event_message.png"/></td>
+    </tr> -->
+    <!-- <tr>
+            <td><img title="Start event message" alt="Start event message" src="start_event_message.png"/></td>
             <td><strong>Start event message</strong></td>
             <td>This is a type of a start event. In some instances, the workflow can start with a message. A “message” in business process model and notation does not mean only letters, emails or calls, but includes also information exchanged between 2 different systems, such as data exchange, notifications, etc. Any action that refers to a specific addressee and represents or contains information for the addressee is a message.</td>
-    </tr>
-    <tr>
-            <td><img title="Start event message" alt="Start event message" src="/input/images/start_event_message.png"/></td>
-            <td><strong>Start event message</strong></td>
-            <td>This is a type of a start event. In some instances, the workflow can start with a message. A “message” in business process model and notation does not mean only letters, emails or calls, but includes also information exchanged between 2 different systems, such as data exchange, notifications, etc. Any action that refers to a specific addressee and represents or contains information for the addressee is a message.</td>
-    </tr>
+    </tr> -->
     <tr>
             <td><img title="End Event" alt="End Event" src="end_event.png"/></td>
             <td><strong>End Event</strong></td>
@@ -375,13 +361,13 @@ This DAK focuses on key business processes conducted by the personas (described 
             </td>
     </tr>
     <tr>
-            <td><img title="Activity with business rule" alt="Activity with business rule" src="/input/images/activity_with_business_rule.png"/></td>
+            <td><img title="Activity with business rule" alt="Activity with business rule" src="activity_with_business_rule.png"/></td>
             <td><strong>Activity with business rule</strong></td>
             <td>This denotes a decision-making activity that requires the business rule, decision-support logic or scheduling logic, to be detailed in a decision-support table. This means that the logic described in the decision-support table will come into play during this activity as outlined in the business process. This is usually reserved for complex decisions. 
             </td>
     </tr>
     <tr>
-            <td><img title="Activity with business rule" alt="Activity with business rule" src="/input/images/activity_with_business_rule.png"/></td>
+            <td><img title="Activity with business rule" alt="Activity with business rule" src="activity_with_business_rule.png"/></td>
             <td><strong>Activity with business rule</strong></td>
             <td>This denotes a decision-making activity that requires the business rule, decision-support logic or scheduling logic, to be detailed in a decision-support table. This means that the logic described in the decision-support table will come into play during this activity as outlined in the business process. This is usually reserved for complex decisions. 
             </td>
@@ -393,22 +379,22 @@ This DAK focuses on key business processes conducted by the personas (described 
             </td>
     </tr>
     <tr>
-            <td><img title="Message flow" alt="Message flow" src="/input/images/message_flow.png"/></td>
+            <td><img title="Message flow" alt="Message flow" src="message_flow.png"/></td>
             <td><strong>Message flow</strong></td>
             <td>This denotes the flow of data or information from one process to another. This is usually used for when data are shared across pools. 
             </td>
     </tr>
-    <tr>
-            <td><img title="Exclusive Gateway" alt="Gateway" src="/input/images/exclusive_gateway.png"/></td>
+    <!-- <tr>
+            <td><img title="Exclusive Gateway" alt="Gateway" src="exclusive_gateway.png"/></td>
             <td><strong>Exclusive Gateway</strong></td>
             <td>This symbol is used to depict a fork, or decision point, in the workflow, which may be a simple binary (e.g. yes/no) filter with two corresponding output arrows, or a different set of outputs. <br>
             There should only be two different outputs that originate from the decision point. If you find yourself needing more than two output or sequence flow arrows, you most likely are trying to depict decision-support logic or a business rule. This should be depicted as an activity with business rule (above) instead. </td>
-    </tr>
-    <tr>
-            <td><img title="Parallel Gateway" alt="Parallel Gateway" src="/input/images/parallel_gateway.png"/></td>
+    </tr> -->
+    <!-- <tr>
+            <td><img title="Parallel Gateway" alt="Parallel Gateway" src="parallel_gateway.png"/></td>
             <td><strong>Parallel Gateway</strong></td>
             <td>The parallel gateway can be used to model concurrency in a process. This type of gateway allows forking into multiple paths of execution or joining multiple incoming paths of execution. An important difference with other gateway types is that the parallel gateway does not evaluate conditions. </td>
-    </tr>
+    </tr> -->
     <tr>
             <td><img title="Throw – Link" alt="Throw – Link" src="throw_link.png"/></td>
             <td><strong>Throw – Link</strong></td>
@@ -422,13 +408,13 @@ This DAK focuses on key business processes conducted by the personas (described 
             </td>
     </tr>
     <tr>
-            <td><img title="Ad hoc subprocess" alt="Ad Hoc subprocess" src="/input/images/ad_hoc_subprocess.png"/></td>
+            <td><img title="Ad hoc subprocess" alt="Ad Hoc subprocess" src="ad_hoc_subprocess.png"/></td>
             <td><strong>Ad hoc subprocess</strong></td>
             <td>An ad hoc subprocess can contain multiple activities (tasks or subprocesses), which can be executed in any order, executed several times, or skipped. However, not all these activities need to be finished before moving on to the next activity.
             </td>
     </tr>
     <tr>
-            <td><img title="Ad hoc subprocess" alt="Ad Hoc subprocess" src="/input/images/ad_hoc_subprocess.png"/></td>
+            <td><img title="Ad hoc subprocess" alt="Ad Hoc subprocess" src="ad_hoc_subprocess.png"/></td>
             <td><strong>Ad hoc subprocess</strong></td>
             <td>An ad hoc subprocess can contain multiple activities (tasks or subprocesses), which can be executed in any order, executed several times, or skipped. However, not all these activities need to be finished before moving on to the next activity.
             </td>
@@ -444,7 +430,7 @@ This DAK focuses on key business processes conducted by the personas (described 
 
 ### Overview of IDSR Processes
 <div class="text-center">
-<img title="Event Based Surveillance" alt="Event Based Surveillance" src="/input/images/event_based_surveillance.png"/>
+<img title="Event Based Surveillance" alt="Event Based Surveillance" src="event_based_surveillance.png"/>
 <br>
 <p><strong>Signal triage</strong> is the process of sorting out (filtering) reported signals to identify which ones are mostly likely to be real events.</p>
 <p> Guiding triage questions: <br>
@@ -455,14 +441,14 @@ Any signal that gets a “YES” response to all the three questions is subjecte
 </p>
 <p><strong>Risk Assessment</strong> is the process of determining the level of risk of an event poses to public health and recommending the appropriate level response needed</p>
 <p>Tools such as risk characterization matrix can be used to guide decision making.</p>
-<img title="Risk Characterization Matrix" alt="Risk Characterization Matrix" src="/input/images/risk_characterization_matrix.png"/> 
+<img title="Risk Characterization Matrix" alt="Risk Characterization Matrix" src="risk_characterization_matrix.png"/> 
 </div>
 
 
 ### Workflow A: Community event based surveillance (CEBS) business process
 
 <div class="text-center">
-<img title="Community-Event-Based Surveillance Workflow" alt="Community-Event-based surveillance Workflow" src="/input/images/community_event_based_surveillance.png"/>
+<img title="Community-Event-Based Surveillance Workflow" alt="Community-Event-based surveillance Workflow" src="community_event_based_surveillance.png"/>
 <br>
 <p><strong>Objective: </strong> To detect, verify and report the presence of any pre-defined signals for public health events at the community level. </p>
 <p><strong> Community Event Based Surveillance pre-defined signals: </strong></p>
@@ -480,7 +466,7 @@ Any signal that gets a “YES” response to all the three questions is subjecte
 
 ### Workflow B:  Health Facility EBS business process
 <div class="text-center">
-<img title="Health facility event-based surveillance Workflow" alt="Health facility event-based surveillance Workflow" src="/input/images/health_facility_event_based_surveillance_workflow.png"/>
+<img title="Health facility event-based surveillance Workflow" alt="Health facility event-based surveillance Workflow" src="health_facility_event_based_surveillance_workflow.png"/>
 <br>
 <p><strong>Objective: </strong>To promptly diagnose and report events that are likely to present threats to public health at health facilities by health care workers.</p>
 <p><strong>Health Facility EBS pre-defined signals: </strong></p>
@@ -495,7 +481,7 @@ Any signal that gets a “YES” response to all the three questions is subjecte
 
 ### Workflow C: Veterinary EBS business process
 <div class="text-center">
-<img title="Veterinary Event-Based Surveillance Workflow" alt="Veterinary Event-Based Surveillance Workflow" src="/input/images/veterinary_event_based_surveillance_workflow.png"/>
+<img title="Veterinary Event-Based Surveillance Workflow" alt="Veterinary Event-Based Surveillance Workflow" src="veterinary_event_based_surveillance_workflow.png"/>
 <br>
 <p><strong>Objective: </strong>To detect zoonotic events in animals, amongst themselves and contacts, verify and report the presence of any pre-defined signals for public health events.</p>
 <p><strong>Veterinary EBS pre-defined signals: </strong></p>
@@ -509,28 +495,28 @@ Any signal that gets a “YES” response to all the three questions is subjecte
 
 ### Workflow G: Laboratory Surveillance business process
 <div class="text-center">
-<img title="Laboratory Surveillance Workflow" alt="Laboratory Surveillance Workflow" src="/input/images/laboratory_surveillance_workflow.png"/>
+<img title="Laboratory Surveillance Workflow" alt="Laboratory Surveillance Workflow" src="laboratory_surveillance_workflow.png"/>
 <br>
 <p><strong>Objective: </strong>To collect, test, and report laboratory results in a timely manner.</p>
 </div>
 
 ### Workflow H: Point of Entry Surveillance business process
 <div class="text-center">
-<img title="Point of Entry Surveillance Workflow" alt="Point of Entry Surveillance Workflow" src="/input/images/point_of_entry_surveillance_workflow.png"/>
+<img title="Point of Entry Surveillance Workflow" alt="Point of Entry Surveillance Workflow" src="point_of_entry_surveillance_workflow.png"/>
 <br>
 <p><strong>Objective: </strong>To detect and prevent the introduction or spread of infectious diseases and other public health threats through designated points of entry (ports, airports and ground crossings); alert and response to international public health emergencies; global partnerships and international collaboration</p>
 </div>
 
 ### Workflow J: Food Surveillance business process
 <div class="text-center">
-<img title="Food Surveillance Workflow" alt="Food Surveillance Workflow" src="/input/images/food_surveillance_workflow.png"/>
+<img title="Food Surveillance Workflow" alt="Food Surveillance Workflow" src="food_surveillance_workflow.png"/>
 <br>
 <p><strong>Objective: </strong>To routinely monitor for hazards in food, and inform the National MOH Division of any contaminated products detected in the market.</p>
 </div>
 
 ### Workflow K: Reporting and monitoring of indicators business process
 <div class="text-center">
-<img title="Reporting and Monitoring of Indicators Workflow" alt="Reporting and Monitoring of Indicators Workflow" src="/input/images/reporting_and_monitoring_of_indicators_workflow.png"/>
+<img title="Reporting and Monitoring of Indicators Workflow" alt="Reporting and Monitoring of Indicators Workflow" src="report_generation_and_analysis_workflow.png"/>
 <br>
 <p><strong>Objective: </strong>To aggregate client-level data into validated, aggregate reports, use the data, and submit reports</p>
 </div>
