@@ -8,3 +8,16 @@ Description : "Details and position information for a physical place where servi
 * address.district ^short = "Sub-county"
 * address.state 0..1 MS
 * address.state ^short = "County"
+
+
+Instance: LocationExample001
+InstanceOf: LocationProfile
+Usage: #example
+Description: "Example of a service delivery location conforming to LocationProfile"
+
+* status = #active
+* name = "Mbagathi County Hospital - ANC Clinic"
+
+* address.city = "Nairobi"
+* address.district = "Kibra"        // Sub-county
+* address.state = "Nairobi County"  // County
