@@ -15,6 +15,7 @@ InstanceOf: LocationProfile
 Usage: #example
 Description: "Example of a service delivery location conforming to LocationProfile"
 
+* id = "LocationExample001"
 * status = #active
 * name = "Mbagathi County Hospital - ANC Clinic"
 
