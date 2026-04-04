@@ -15,7 +15,7 @@
     </thead>
     <tbody>
         <tr>
-            <td>IntelliSOFT Consulting Limited</td>
+            <td>Kenya National Public Health Institute</td>
             <td>18th March 2025</td>
             <td>Initial Draft</td>
             <td>1.0</td>
