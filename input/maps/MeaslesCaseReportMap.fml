@@ -1,0 +1,320 @@
+map "http://example.org/StructureMap/MeaslesCaseReportMap" = "MeaslesCaseReportMap"
+
+// Measles Case Report QuestionnaireResponse to FHIR resources
+// Maps to: Patient, Encounter, Condition (Measles), Immunization (MR/Measles), Specimen
+
+uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" alias QuestionnaireResponse as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as target
+uses "http://hl7.org/fhir/StructureDefinition/Patient" alias Patient as target
+uses "http://hl7.org/fhir/StructureDefinition/Encounter" alias Encounter as target
+uses "http://hl7.org/fhir/StructureDefinition/Condition" alias Condition as target
+uses "http://hl7.org/fhir/StructureDefinition/Immunization" alias Immunization as target
+uses "http://hl7.org/fhir/StructureDefinition/Specimen" alias Specimen as target
+
+group MeaslesCaseReportMap(source src : QuestionnaireResponse, target bundle : Bundle) {
+  src -> bundle.id = uuid() "bundleId";
+  src -> bundle.type = 'transaction' "bundleType";
+
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Patient') as patient then MapMeaslesPatient(src, patient) "execPatient";
+    src -> e.request as req, req.method = 'PUT', req.url = ('Patient/' + %src.subject.reference) "patientReq";
+  } "patientEntry";
+
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Encounter') as encounter then MapMeaslesEncounter(src, encounter) "execEncounter";
+    src -> e.request as req, req.method = 'POST', req.url = 'Encounter' "encounterReq";
+  } "encounterEntry";
+
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Condition') as condition then MapMeaslesCondition(src, condition) "execCondition";
+    src -> e.request as req, req.method = 'POST', req.url = 'Condition' "conditionReq";
+  } "conditionEntry";
+
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Immunization') as immunization then MapMeaslesImmunization(src, immunization) "execImmunization";
+    src -> e.request as req, req.method = 'POST', req.url = 'Immunization' "immunizationReq";
+  } "immunizationEntry";
+
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Specimen') as specimen then MapMeaslesSpecimen(src, specimen) "execSpecimen";
+    src -> e.request as req, req.method = 'POST', req.url = 'Specimen' "specimenReq";
+  } "specimenEntry";
+}
+
+group MapMeaslesPatient(source src : QuestionnaireResponse, target patient : Patient) {
+  src -> patient.id = uuid() "patientId";
+
+  src.item as demographics where linkId = '670954892057' then {
+    // Given name
+    demographics.item as item where linkId = '873240407472' then {
+      item.answer first as ans -> patient.name as name, name.given = ans.valueString "givenName";
+    } "firstName";
+
+    // Middle name
+    demographics.item as item where linkId = '246751846436' then {
+      item.answer first as ans -> patient.name as name, name.given = ans.valueString "middleName";
+    } "middleName";
+
+    // Family name
+    demographics.item as item where linkId = '486402457213' then {
+      item.answer first as ans -> patient.name as name, name.family = ans.valueString "familyName";
+    } "familyName";
+
+    // Gender
+    demographics.item as item where linkId = '929966324957' then {
+      item.answer first as ans -> patient.gender = (ans.valueCoding.code) "gender";
+    } "gender";
+
+    // Date of birth
+    demographics.item as item where linkId = '257830485990' then {
+      item.answer first as ans -> patient.birthDate = ans.valueDate "birthDate";
+    } "birthDate";
+
+    // Residence (Urban/Rural) as address use
+    demographics.item as item where linkId = 'residence' then {
+      item.answer first as ans -> patient.address as addr then {
+        ans.valueCoding as val where code = 'Urban' -> addr.use = 'home', addr.type = 'physical' "urbanAddr";
+        ans.valueCoding as val where code = 'Rural' -> addr.use = 'home', addr.type = 'physical', addr.district = 'Rural' "ruralAddr";
+      } "residenceType";
+    } "residence";
+
+    // Parent / Guardian
+    demographics.item as item where linkId = 'parent' then {
+      item.answer first as ans -> patient.contact as contact then {
+        ans -> contact.name as cname, cname.text = ans.valueString "contactName";
+      } "parentContact";
+    } "parent";
+
+    // Phone
+    demographics.item as item where linkId = '754217593839' then {
+      item.answer first as ans -> patient.telecom as tel, tel.system = 'phone', tel.value = ans.valueString "phone";
+    } "phone";
+
+    // County/Sub-County/Ward address
+    demographics.item as item where linkId = '242811643559' then {
+      item.answer first as ans -> patient.address as addr, addr.line = ans.valueString "village";
+    } "village";
+
+    demographics.item as item where linkId = '946232932304' then {
+      item.answer first as ans -> patient.address as addr, addr.district = ans.valueString "landmark";
+    } "landmark";
+
+    demographics.item as item where linkId = '424111786438' then {
+      item.answer first as ans -> patient.address as addr, addr.line = ans.valueString "street";
+    } "street";
+  } "demographics";
+}
+
+group MapMeaslesEncounter(source src : QuestionnaireResponse, target encounter : Encounter) {
+  src -> encounter.id = uuid() "encounterId";
+  src -> encounter.status = 'finished' "status";
+  src -> encounter.class as cls then {
+    src -> cls.system = 'http://terminology.hl7.org/CodeSystem/v3-ActCode' "clsSys";
+    src -> cls.code = 'AMB' "clsCode";
+  } "class";
+
+  src.subject as subj -> encounter.subject as ref, ref.reference = ('Patient/' + subj.reference) "subject";
+
+  // EPID No from reporting site
+  src.item as reportSite where linkId = '151479012557' then {
+    reportSite.item as item where linkId = '992818778559' then {
+      item.answer first as ans -> encounter.identifier as id then {
+        ans -> id.system = 'http://example.org/identifier/epid' "epidSys";
+        ans -> id.value = ans.valueString "epidValue";
+      } "epidId";
+    } "epidNo";
+  } "reportSite";
+
+  // Case information
+  src.item as caseInfo where linkId = '216343227137' then {
+    // Date first seen at facility → period start
+    caseInfo.item as item where linkId = '554231819382' then {
+      item.answer first as ans -> encounter.period as period, period.start = ans.valueDate "periodStart";
+    } "firstSeen";
+
+    // IP/OP number
+    caseInfo.item as item where linkId = '755731625544' then {
+      item.answer first as ans -> encounter.identifier as id then {
+        ans -> id.system = 'http://example.org/identifier/ip-op' "ipopSys";
+        ans -> id.value = ans.valueString "ipopValue";
+      } "ipopId";
+    } "ipopNo";
+
+    // Hospitalization
+    caseInfo.item as item where linkId = '483042281962' then {
+      item.answer first as ans where valueCoding.code = 'yes' -> encounter.hospitalization as hosp then {
+        ans -> hosp.admitSource as src, src.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/admit-source', cod.code = 'hosp-trans' "admitSource";
+      } "hospitalization";
+    } "hospitalized";
+
+    // Date of admission
+    caseInfo.item as item where linkId = '340908984116' then {
+      item.answer first as ans -> encounter.period as period, period.start = ans.valueDate "admitDate";
+    } "admitDate";
+
+    // Outcome → disposition
+    caseInfo.item as item where linkId = '508745697175' then {
+      item.answer first as ans -> encounter.hospitalization as hosp then {
+        ans.valueCoding as val where code = 'Alive' -> hosp.dischargeDisposition as disp, disp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/discharge-disposition', cod.code = 'home' "alive";
+        ans.valueCoding as val where code = 'Dead' -> hosp.dischargeDisposition as disp, disp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/discharge-disposition', cod.code = 'exp' "dead";
+      } "outcomeDisp";
+    } "outcome";
+  } "caseInfo";
+
+  // Case type (Case or Line List) as type
+  src.item as clinicalHistory where linkId = '477144604557' then {
+    clinicalHistory.item as item where linkId = '865158268604' then {
+      item.answer first as ans -> encounter.type as type then {
+        ans -> type.coding as cod, cod.system = 'http://example.org/CodeSystem/measles-case-type', cod.code = (ans.valueCoding.code), cod.display = (ans.valueCoding.display) "caseType";
+      } "encounterType";
+    } "caseOrLineList";
+  } "clinicalHistory";
+}
+
+group MapMeaslesCondition(source src : QuestionnaireResponse, target condition : Condition) {
+  src -> condition.id = uuid() "conditionId";
+
+  // Measles SNOMED code
+  src -> condition.code as code then {
+    src -> code.coding as coding then {
+      src -> coding.system = 'http://snomed.info/sct' "snomedSys";
+      src -> coding.code = '14189004' "measlesCode";
+      src -> coding.display = 'Measles' "measlesDisplay";
+    } "measlesCoding";
+    src -> code.text = 'Measles' "measlesText";
+  } "codeBlock";
+
+  src.subject as subj -> condition.subject as ref, ref.reference = ('Patient/' + subj.reference) "subject";
+
+  src.item as clinicalHistory where linkId = '477144604557' then {
+    // Date of onset of illness
+    clinicalHistory.item as item where linkId = '728034137219' then {
+      item.answer first as ans -> condition.onset = ans.valueDate "onsetDate";
+    } "onsetDate";
+
+    // Clinical symptoms as body site / note
+    clinicalHistory.item as item where linkId = '745196148424' then {
+      item.answer as ans -> condition.note as note, note.text = (ans.valueCoding.display) "symptomNote";
+    } "symptoms";
+
+    // Date of rash onset
+    clinicalHistory.item as item where linkId = '576528567552' then {
+      item.answer first as ans -> condition.extension as ext then {
+        ans -> ext.url = 'http://example.org/StructureDefinition/rashOnsetDate' "extUrl";
+        ans -> ext.valueDate = ans.valueDate "extValue";
+      } "rashOnset";
+    } "rashDate";
+
+    // Type of rash
+    clinicalHistory.item as item where linkId = '704922081985' then {
+      item.answer first as ans -> condition.note as note, note.text = ('Rash type: ' + ans.valueCoding.display) "rashTypeNote";
+    } "rashType";
+
+    // Home visited for contact investigation
+    clinicalHistory.item as item where linkId = '207408507040' then {
+      item.answer first as ans -> condition.note as note, note.text = (iif(ans.valueCoding.code = 'yes', 'Home visited for contact investigation: Yes', 'Home visited for contact investigation: No')) "contactInvestNote";
+    } "homeVisited";
+
+    // Date of home visit
+    clinicalHistory.item as item where linkId = '566661890668' then {
+      item.answer first as ans -> condition.extension as ext then {
+        ans -> ext.url = 'http://example.org/StructureDefinition/contactInvestigationDate' "extUrl";
+        ans -> ext.valueDate = ans.valueDate "extValue";
+      } "homeVisitExt";
+    } "homeVisitDate";
+  } "clinicalHistory";
+
+  // Outcome → clinical status from case info
+  src.item as caseInfo where linkId = '216343227137' then {
+    caseInfo.item as item where linkId = '508745697175' then {
+      item.answer first as ans -> condition.clinicalStatus as status then {
+        ans.valueCoding as val where code = 'Dead' -> status.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/condition-clinical', cod.code = 'inactive' "deadStatus";
+        ans.valueCoding as val where code = 'Alive' -> status.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/condition-clinical', cod.code = 'active' "aliveStatus";
+      } "clinicalStatus";
+    } "outcome";
+  } "caseInfoStatus";
+}
+
+group MapMeaslesImmunization(source src : QuestionnaireResponse, target immunization : Immunization) {
+  src -> immunization.id = uuid() "immunizationId";
+  src -> immunization.status = 'completed' "status";
+
+  // MR / Measles vaccine code
+  src -> immunization.vaccineCode as code then {
+    src -> code.coding as coding then {
+      src -> coding.system = 'http://hl7.org/fhir/sid/cvx' "cvxSys";
+      src -> coding.code = '05' "measlesCode";
+      src -> coding.display = 'Measles-Rubella (MR) Vaccine' "mrDisplay";
+    } "mrCoding";
+  } "vaccineCode";
+
+  src.subject as subj -> immunization.patient as ref, ref.reference = ('Patient/' + subj.reference) "patient";
+
+  src.item as vaccination where linkId = '736291402384' then {
+    // Vaccination status
+    vaccination.item as item where linkId = '517772812375' then {
+      item.answer first as ans where valueCoding.code = 'no' -> immunization.status = 'not-done' "notVaccinated";
+      item.answer first as ans where valueCoding.code = 'unknown' -> immunization.statusReason as reason, reason.text = 'Unknown vaccination status' "unknownStatus";
+    } "vaccinationStatus";
+
+    // Number of doses
+    vaccination.item as item where linkId = '886125589225' then {
+      item.answer first as ans -> immunization.protocolApplied as protocol then {
+        ans -> protocol.doseNumber = ans.valueInteger "doseNumber";
+      } "protocol";
+    } "doses";
+
+    // MR vaccination in last 30 days
+    vaccination.item as item where linkId = '308128177300' then {
+      item.answer first as ans -> immunization.extension as ext then {
+        ans -> ext.url = 'http://example.org/StructureDefinition/vaccineLast30Days' "extUrl";
+        ans -> ext.valueCoding = ans.valueCoding "extValue";
+      } "last30DaysExt";
+    } "last30Days";
+
+    // Date of last vaccination
+    vaccination.item as item where linkId = '544290619304' then {
+      item.answer first as ans -> immunization.occurrenceDateTime = ans.valueDate "lastVaccDate";
+    } "lastVaccDate";
+  } "vaccination";
+}
+
+group MapMeaslesSpecimen(source src : QuestionnaireResponse, target specimen : Specimen) {
+  src -> specimen.id = uuid() "specimenId";
+
+  // Blood/Urine/Respiratory type (default to blood serum for measles serology)
+  src -> specimen.type as type then {
+    src -> type.coding as coding then {
+      src -> coding.system = 'http://snomed.info/sct' "snomedSys";
+      src -> coding.code = '119364003' "serumCode";
+      src -> coding.display = 'Serum specimen' "serumDisplay";
+    } "serumCoding";
+  } "specimenType";
+
+  src.subject as subj -> specimen.subject as ref, ref.reference = ('Patient/' + subj.reference) "subject";
+
+  src.item as specimenCollection where linkId = '271053545237' then {
+    // Specimen type(s) selected
+    specimenCollection.item as item where linkId = '412689284625' then {
+      item.answer as ans -> specimen.note as note, note.text = ('Specimen collected: ' + ans.valueCoding.display) "specimenNote";
+    } "specimenTypes";
+
+    // Date of specimen collection
+    specimenCollection.item as item where linkId = '8962468583341' then {
+      item.answer first as ans -> specimen.collection as coll, coll.collectedDateTime = ans.valueDate "collectionDate";
+    } "collectionDate";
+
+    // Date specimen sent to lab
+    specimenCollection.item as item where linkId = '718251724172' then {
+      item.answer first as ans -> specimen.processing as proc then {
+        ans -> proc.description = 'Specimen sent to lab' "procDesc";
+        ans -> proc.timeDateTime = ans.valueDate "procTime";
+      } "sentToLab";
+    } "sentToLabDate";
+
+    // Other specimen types
+    specimenCollection.item as item where linkId = '340507649387' then {
+      item.answer first as ans -> specimen.note as note, note.text = ('Other specimen type: ' + ans.valueString) "otherSpecimenNote";
+    } "otherSpecimen";
+  } "specimenCollection";
+}

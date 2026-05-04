@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(time bash *)"
+      "Bash(time bash *)",
+      "Bash(grep --line-buffered -E \"SUSHI|IG Publisher|Building|Processing|Finished|Complete|Error|ERROR|Exception|WARN|seconds|minutes|elapsed|Done|real|user|sys|^$\")"
     ]
   }
 }
