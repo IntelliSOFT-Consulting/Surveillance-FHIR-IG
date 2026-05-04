@@ -1,0 +1,216 @@
+map "http://example.org/StructureMap/MeaslesLabResultsMap" = "MeaslesLabResultsMap"
+
+// Measles Lab Results QuestionnaireResponse to FHIR resources
+// Maps to: Observation (Measles IgM), Observation (Rubella IgM), DiagnosticReport
+
+uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" alias QuestionnaireResponse as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as target
+uses "http://hl7.org/fhir/StructureDefinition/Observation" alias Observation as target
+uses "http://hl7.org/fhir/StructureDefinition/DiagnosticReport" alias DiagnosticReport as target
+
+group MeaslesLabResultsMap(source src : QuestionnaireResponse, target bundle : Bundle) {
+  src -> bundle.id = uuid() "bundleId";
+  src -> bundle.type = 'transaction' "bundleType";
+
+  // Measles IgM Observation
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Observation') as measlesObs then MapMeaslesIgM(src, measlesObs) "execMeaslesIgM";
+    src -> e.request as req, req.method = 'POST', req.url = 'Observation' "measlesObsReq";
+  } "measlesIgMEntry";
+
+  // Rubella IgM Observation
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Observation') as rubellaObs then MapRubellaIgM(src, rubellaObs) "execRubellaIgM";
+    src -> e.request as req, req.method = 'POST', req.url = 'Observation' "rubellaObsReq";
+  } "rubellaIgMEntry";
+
+  // DiagnosticReport
+  src -> bundle.entry as e then {
+    src -> e.resource = create('DiagnosticReport') as report then MapLabDiagnosticReport(src, report) "execReport";
+    src -> e.request as req, req.method = 'POST', req.url = 'DiagnosticReport' "reportReq";
+  } "diagnosticReportEntry";
+}
+
+group MapMeaslesIgM(source src : QuestionnaireResponse, target obs : Observation) {
+  src -> obs.id = uuid() "obsId";
+  src -> obs.status = 'final' "status";
+
+  // LOINC code for Measles virus IgM Ab in Serum
+  src -> obs.code as code then {
+    src -> code.coding as coding then {
+      src -> coding.system = 'http://loinc.org' "loincSys";
+      src -> coding.code = '20479-4' "measlesIgMCode";
+      src -> coding.display = 'Measles virus IgM Ab [Presence] in Serum' "measlesIgMDisplay";
+    } "measlesIgMCoding";
+    src -> code.text = 'Measles IgM' "obsText";
+  } "codeBlock";
+
+  src.subject as subj -> obs.subject as ref, ref.reference = ('Patient/' + subj.reference) "subject";
+
+  // Lab ID as identifier
+  src.item as item where linkId = '8732404074721' then {
+    item.answer first as ans -> obs.identifier as id then {
+      ans -> id.system = 'http://example.org/identifier/lab-id' "labIdSys";
+      ans -> id.value = ans.valueString "labIdValue";
+    } "labId";
+  } "labIdItem";
+
+  // Specimen sent date → effective period start
+  src.item as item where linkId = '718251724172' then {
+    item.answer first as ans -> obs.effective = ans.valueDate "effectiveDate";
+  } "specimenSentDate";
+
+  // Date specimen received → issued
+  src.item as item where linkId = 'date-specimen-received' then {
+    item.answer first as ans -> obs.issued = ans.valueDate "issued";
+  } "receivedDate";
+
+  // Specimen condition as note
+  src.item as item where linkId = 'specimen-condition' then {
+    item.answer first as ans -> obs.note as note, note.text = ('Specimen condition: ' + ans.valueCoding.display) "conditionNote";
+  } "specimenCondition";
+
+  // Measles IgM result → value
+  src.item as item where linkId = 'measles-igm' then {
+    item.answer first as ans -> obs.valueCodeableConcept as coding then {
+      ans -> coding.coding as cod then {
+        ans -> cod.system = 'http://example.org/CodeSystem/lab-result' "resultSys";
+        ans -> cod.code = (ans.valueCoding.code) "resultCode";
+        ans -> cod.display = (ans.valueCoding.display) "resultDisplay";
+      } "resultCoding";
+    } "measlesIgMResult";
+
+    // Interpretation
+    item.answer first as ans -> obs.interpretation as interp then {
+      ans.valueCoding as val where code = 'Positive' -> interp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation', cod.code = 'POS', cod.display = 'Positive' "posInterp";
+      ans.valueCoding as val where code = 'Negative' -> interp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation', cod.code = 'NEG', cod.display = 'Negative' "negInterp";
+      ans.valueCoding as val where code = 'Indeterminate' -> interp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation', cod.code = 'IND', cod.display = 'Indeterminate' "indInterp";
+    } "interpretation";
+  } "measlesIgMItem";
+
+  // Date results sent out
+  src.item as item where linkId = 'date-lab-sent-results' then {
+    item.answer first as ans -> obs.extension as ext then {
+      ans -> ext.url = 'http://example.org/StructureDefinition/resultsSentDate' "extUrl";
+      ans -> ext.valueDate = ans.valueDate "extValue";
+    } "resultsSentExt";
+  } "resultsSentDate";
+
+  // Regional lab referral date
+  src.item as item where linkId = '655865451155' then {
+    item.answer first as ans -> obs.extension as ext then {
+      ans -> ext.url = 'http://example.org/StructureDefinition/regionalLabDate' "extUrl";
+      ans -> ext.valueDate = ans.valueDate "extValue";
+    } "regionalLabExt";
+  } "regionalLabDate";
+
+  // Final classification as note
+  src.item as item where linkId = 'final-classification' then {
+    item.answer first as ans -> obs.note as note, note.text = ('Final classification: ' + ans.valueCoding.display) "classificationNote";
+  } "finalClassification";
+}
+
+group MapRubellaIgM(source src : QuestionnaireResponse, target obs : Observation) {
+  src -> obs.id = uuid() "obsId";
+  src -> obs.status = 'final' "status";
+
+  // LOINC code for Rubella virus IgM Ab in Serum
+  src -> obs.code as code then {
+    src -> code.coding as coding then {
+      src -> coding.system = 'http://loinc.org' "loincSys";
+      src -> coding.code = '22501-3' "rubellaIgMCode";
+      src -> coding.display = 'Rubella virus IgM Ab [Presence] in Serum' "rubellaIgMDisplay";
+    } "rubellaIgMCoding";
+    src -> code.text = 'Rubella IgM' "obsText";
+  } "codeBlock";
+
+  src.subject as subj -> obs.subject as ref, ref.reference = ('Patient/' + subj.reference) "subject";
+
+  // Lab ID as identifier
+  src.item as item where linkId = '8732404074721' then {
+    item.answer first as ans -> obs.identifier as id then {
+      ans -> id.system = 'http://example.org/identifier/lab-id' "labIdSys";
+      ans -> id.value = ans.valueString "labIdValue";
+    } "labId";
+  } "labIdItem";
+
+  // Specimen received date → effective
+  src.item as item where linkId = 'date-specimen-received' then {
+    item.answer first as ans -> obs.effective = ans.valueDate "effectiveDate";
+  } "receivedDate";
+
+  // Rubella IgM result → value
+  src.item as item where linkId = 'rubella-igm' then {
+    item.answer first as ans -> obs.valueCodeableConcept as coding then {
+      ans -> coding.coding as cod then {
+        ans -> cod.system = 'http://example.org/CodeSystem/lab-result' "resultSys";
+        ans -> cod.code = (ans.valueCoding.code) "resultCode";
+        ans -> cod.display = (ans.valueCoding.display) "resultDisplay";
+      } "resultCoding";
+    } "rubellaIgMResult";
+
+    // Interpretation
+    item.answer first as ans -> obs.interpretation as interp then {
+      ans.valueCoding as val where code = 'Positive' -> interp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation', cod.code = 'POS', cod.display = 'Positive' "posInterp";
+      ans.valueCoding as val where code = 'Negative' -> interp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation', cod.code = 'NEG', cod.display = 'Negative' "negInterp";
+      ans.valueCoding as val where code = 'Indeterminate' -> interp.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation', cod.code = 'IND', cod.display = 'Indeterminate' "indInterp";
+    } "interpretation";
+  } "rubellaIgMItem";
+
+  // Status: not done if absent
+  src.item as item where linkId = 'rubella-igm' then {
+    item where answer.empty() -> obs.status = 'cancelled', obs.dataAbsentReason as reason, reason.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/data-absent-reason', cod.code = 'not-performed' "notDone";
+  } "rubellaNotDone";
+}
+
+group MapLabDiagnosticReport(source src : QuestionnaireResponse, target report : DiagnosticReport) {
+  src -> report.id = uuid() "reportId";
+  src -> report.status = 'final' "status";
+
+  // Category: Laboratory
+  src -> report.category as cat then {
+    src -> cat.coding as coding then {
+      src -> coding.system = 'http://terminology.hl7.org/CodeSystem/v2-0074' "catSys";
+      src -> coding.code = 'LAB' "catCode";
+      src -> coding.display = 'Laboratory' "catDisplay";
+    } "catCoding";
+  } "category";
+
+  // Measles serology panel LOINC
+  src -> report.code as code then {
+    src -> code.coding as coding then {
+      src -> coding.system = 'http://loinc.org' "loincSys";
+      src -> coding.code = '41852-5' "panelCode";
+      src -> coding.display = 'Microorganism or agent identified in Specimen' "panelDisplay";
+    } "panelCoding";
+    src -> code.text = 'Measles/Rubella Serology Panel' "codeText";
+  } "codeBlock";
+
+  src.subject as subj -> report.subject as ref, ref.reference = ('Patient/' + subj.reference) "subject";
+
+  // Lab ID
+  src.item as item where linkId = '8732404074721' then {
+    item.answer first as ans -> report.identifier as id then {
+      ans -> id.system = 'http://example.org/identifier/lab-id' "labIdSys";
+      ans -> id.value = ans.valueString "labIdValue";
+    } "labId";
+  } "labIdItem";
+
+  // Effective date from specimen received
+  src.item as item where linkId = 'date-specimen-received' then {
+    item.answer first as ans -> report.effective = ans.valueDate "effectiveDate";
+  } "effectiveDate";
+
+  // Issued date from results sent
+  src.item as item where linkId = 'date-lab-sent-results' then {
+    item.answer first as ans -> report.issued = ans.valueDate "issued";
+  } "issuedDate";
+
+  // Final classification as conclusion
+  src.item as item where linkId = 'final-classification' then {
+    item.answer first as ans -> report.conclusion = (ans.valueCoding.display) "conclusion";
+    item.answer first as ans -> report.conclusionCode as code then {
+      ans -> code.coding as cod, cod.system = 'http://example.org/CodeSystem/measles-classification', cod.code = (ans.valueCoding.code), cod.display = (ans.valueCoding.display) "conclusionCode";
+    } "conclusionCode";
+  } "classification";
+}

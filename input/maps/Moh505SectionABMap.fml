@@ -1,0 +1,297 @@
+map "http://example.org/StructureMap/Moh505SectionABMap" = "Moh505SectionABMap"
+
+// MOH 505 Section A and B QuestionnaireResponse to FHIR resources
+// Maps disease tally counts to Observation resources (one per disease per reporting period)
+// Observation.component encodes: under-5 cases, under-5 deaths, over-5 cases, over-5 deaths
+
+uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" alias QuestionnaireResponse as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as target
+uses "http://hl7.org/fhir/StructureDefinition/Observation" alias Observation as target
+uses "http://hl7.org/fhir/StructureDefinition/BackboneElement" alias BackboneElement as source
+
+group Moh505SectionABMap(source src : QuestionnaireResponse, target bundle : Bundle) {
+  src -> bundle.id = uuid() "bundleId";
+  src -> bundle.type = 'transaction' "bundleType";
+
+  src.item as page where linkId = '306799299' then {
+
+    // ── AEFI ──────────────────────────────────────────────────────────────────
+    page.item as cb where linkId = '745196148424' then {
+      page.item as u5c where linkId = 'under5-cases' then {
+        page.item as u5d where linkId = 'under5-deaths' then {
+          page.item as o5c where linkId = 'over5-cases' then {
+            page.item as o5d where linkId = 'over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "aefiObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "aefi";
+
+    // ── Acute Jaundice ────────────────────────────────────────────────────────
+    page.item as cb where linkId = 'acute-jaundice' then {
+      page.item as u5c where linkId = 'acute-jaundice-under5-cases' then {
+        page.item as u5d where linkId = 'acute-jaundice-under5-deaths' then {
+          page.item as o5c where linkId = 'acute-jaundice-over5-cases' then {
+            page.item as o5d where linkId = 'acute-jaundice-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "ajObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "acuteJaundice";
+
+    // ── Acute Malnutrition ────────────────────────────────────────────────────
+    page.item as cb where linkId = 'acute-malnutrition' then {
+      page.item as u5c where linkId = 'acute-malnutrition-under5-cases' then {
+        page.item as u5d where linkId = 'acute-malnutrition-under5-deaths' then {
+          page.item as o5c where linkId = 'acute-malnutrition-over5-cases' then {
+            page.item as o5d where linkId = 'acute-malnutrition-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "amObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "acuteMalnutrition";
+
+    // ── AFP (Poliomyelitis) ───────────────────────────────────────────────────
+    page.item as cb where linkId = 'afp-poliomyelitis' then {
+      page.item as u5c where linkId = 'afp-poliomyelitis-under5-cases' then {
+        page.item as u5d where linkId = 'afp-poliomyelitis-under5-deaths' then {
+          page.item as o5c where linkId = 'afp-poliomyelitis-over5-cases' then {
+            page.item as o5d where linkId = 'afp-poliomyelitis-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "afpObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "afp";
+
+    // ── Anthrax ───────────────────────────────────────────────────────────────
+    page.item as cb where linkId = 'anthrax' then {
+      page.item as u5c where linkId = 'anthrax-under5-cases' then {
+        page.item as u5d where linkId = 'anthrax-under5-deaths' then {
+          page.item as o5c where linkId = 'anthrax-over5-cases' then {
+            page.item as o5d where linkId = 'anthrax-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "anthraxObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "anthrax";
+
+    // ── Cholera ───────────────────────────────────────────────────────────────
+    page.item as cb where linkId = 'cholera' then {
+      page.item as u5c where linkId = 'cholera-under5-cases' then {
+        page.item as u5d where linkId = 'cholera-under5-deaths' then {
+          page.item as o5c where linkId = 'cholera-over5-cases' then {
+            page.item as o5d where linkId = 'cholera-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "choleraObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "cholera";
+
+    // ── Chikungunya ───────────────────────────────────────────────────────────
+    page.item as cb where linkId = 'chikungunya' then {
+      page.item as u5c where linkId = 'chikungunya-under5-cases' then {
+        page.item as u5d where linkId = 'chikungunya-under5-deaths' then {
+          page.item as o5c where linkId = 'chikungunya-over5-cases' then {
+            page.item as o5d where linkId = 'chikungunya-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "chikungunyaObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "chikungunya";
+
+    // ── COVID-19 ──────────────────────────────────────────────────────────────
+    page.item as cb where linkId = 'covid-19' then {
+      page.item as u5c where linkId = 'covid-19-under5-cases' then {
+        page.item as u5d where linkId = 'covid-19-under5-deaths' then {
+          page.item as o5c where linkId = 'covid-19-over5-cases' then {
+            page.item as o5d where linkId = 'covid-19-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "covidObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "covid19";
+
+    // ── Dengue ────────────────────────────────────────────────────────────────
+    page.item as cb where linkId = 'dengue' then {
+      page.item as u5c where linkId = 'dengue-under5-cases' then {
+        page.item as u5d where linkId = 'dengue-under5-deaths' then {
+          page.item as o5c where linkId = 'dengue-over5-cases' then {
+            page.item as o5d where linkId = 'dengue-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "dengueObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "dengue";
+
+    // ── Dysentery (Bacillary) ─────────────────────────────────────────────────
+    page.item as cb where linkId = 'dysentery-bacillary' then {
+      page.item as u5c where linkId = 'dysentery-bacillary-under5-cases' then {
+        page.item as u5d where linkId = 'dysentery-bacillary-under5-deaths' then {
+          page.item as o5c where linkId = 'dysentery-bacillary-over5-cases' then {
+            page.item as o5d where linkId = 'dysentery-bacillary-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "dysenteryObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "dysenteryBacillary";
+
+    // ── Guinea Worm Disease ───────────────────────────────────────────────────
+    page.item as cb where linkId = 'guinea-worm-disease' then {
+      page.item as u5c where linkId = 'guinea-worm-disease-under5-cases' then {
+        page.item as u5d where linkId = 'guinea-worm-disease-under5-deaths' then {
+          page.item as o5c where linkId = 'guinea-worm-disease-over5-cases' then {
+            page.item as o5d where linkId = 'guinea-worm-disease-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "guineaWormObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "guineaWorm";
+
+    // ── Measles ───────────────────────────────────────────────────────────────
+    page.item as cb where linkId = 'measles' then {
+      page.item as u5c where linkId = 'measles-under5-cases' then {
+        page.item as u5d where linkId = 'measles-under5-deaths' then {
+          page.item as o5c where linkId = 'measles-over5-cases' then {
+            page.item as o5d where linkId = 'measles-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "measlesObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "measlesSectionAB";
+
+    // ── Suspected Malaria ─────────────────────────────────────────────────────
+    page.item as cb where linkId = 'suspected-malaria' then {
+      page.item as u5c where linkId = 'suspected-malaria-under5-cases' then {
+        page.item as u5d where linkId = 'suspected-malaria-under5-deaths' then {
+          page.item as o5c where linkId = 'suspected-malaria-over5-cases' then {
+            page.item as o5d where linkId = 'suspected-malaria-over5-deaths' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "malariaObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "suspectedMalaria";
+
+    // ── Bacterial Meningitis (numeric linkIds) ────────────────────────────────
+    page.item as cb where linkId = '912271576972' then {
+      page.item as u5c where linkId = '871055915491' then {
+        page.item as u5d where linkId = '388760057096' then {
+          page.item as o5c where linkId = '483347883552' then {
+            page.item as o5d where linkId = '983942974596' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "bactMenObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "bacterialMeningitis";
+
+    // ── Neonatal Tetanus (numeric linkIds) ────────────────────────────────────
+    page.item as cb where linkId = '328118347844' then {
+      page.item as u5c where linkId = '535840524666' then {
+        page.item as u5d where linkId = '703609548617' then {
+          cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObsPartial(cb, u5c, u5d, obs) "neonatalTetObs";
+        } "u5d";
+      } "u5c";
+    } "neonatalTetanus";
+
+    // ── Onchocerciasis (numeric linkIds) ──────────────────────────────────────
+    page.item as cb where linkId = '579664664652' then {
+      page.item as u5c where linkId = '327509292099' then {
+        page.item as u5d where linkId = '928912977066' then {
+          page.item as o5c where linkId = '456099214566' then {
+            page.item as o5d where linkId = '749207004486' then {
+              cb where answer.exists() -> bundle.entry as e, e.resource = create('Observation') as obs then CreateSectionABObs(cb, u5c, u5d, o5c, o5d, obs) "onchocerciasisObs";
+            } "o5d";
+          } "o5c";
+        } "u5d";
+      } "u5c";
+    } "onchocerciasis";
+  } "diseasesPage";
+}
+
+// Helper: create a disease Observation with 4 components (under-5 cases/deaths, over-5 cases/deaths)
+group CreateSectionABObs(
+  source cb : BackboneElement,
+  source u5CasesItem : BackboneElement,
+  source u5DeathsItem : BackboneElement,
+  source o5CasesItem : BackboneElement,
+  source o5DeathsItem : BackboneElement,
+  target obs : Observation
+) {
+  cb -> obs.id = uuid() "obsId";
+  cb -> obs.status = 'final' "status";
+  cb -> obs.category as cat then {
+    cb -> cat.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/observation-category', cod.code = 'survey', cod.display = 'Survey' "cat";
+  } "category";
+
+  // Disease code from the checked answer
+  cb.answer first as ans -> obs.code as code then {
+    ans -> code.coding as cod, cod.system = 'http://example.org/CodeSystem/moh505-disease', cod.code = (ans.valueCoding.code), cod.display = (ans.valueCoding.display) "codeCoding";
+    ans -> code.text = (ans.valueCoding.display) "codeText";
+  } "diseaseCode";
+
+  // Component: Under 5 Cases
+  u5CasesItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Under 5 Cases' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5CasesComp";
+
+  // Component: Under 5 Deaths
+  u5DeathsItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Under 5 Deaths' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5DeathsComp";
+
+  // Component: Over 5 Cases
+  o5CasesItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Over 5 Cases' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "o5CasesComp";
+
+  // Component: Over 5 Deaths
+  o5DeathsItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Over 5 Deaths' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "o5DeathsComp";
+}
+
+// Helper: create an Observation with only under-5 components (for diseases like Neonatal Tetanus)
+group CreateSectionABObsPartial(
+  source cb : BackboneElement,
+  source u5CasesItem : BackboneElement,
+  source u5DeathsItem : BackboneElement,
+  target obs : Observation
+) {
+  cb -> obs.id = uuid() "obsId";
+  cb -> obs.status = 'final' "status";
+  cb -> obs.category as cat then {
+    cb -> cat.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/observation-category', cod.code = 'survey', cod.display = 'Survey' "cat";
+  } "category";
+
+  cb.answer first as ans -> obs.code as code then {
+    ans -> code.coding as cod, cod.system = 'http://example.org/CodeSystem/moh505-disease', cod.code = (ans.valueCoding.code), cod.display = (ans.valueCoding.display) "codeCoding";
+    ans -> code.text = (ans.valueCoding.display) "codeText";
+  } "diseaseCode";
+
+  u5CasesItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Under 5 Cases' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5CasesComp";
+
+  u5DeathsItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Under 5 Deaths' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5DeathsComp";
+}

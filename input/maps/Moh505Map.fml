@@ -1,0 +1,486 @@
+map "http://example.org/StructureMap/Moh505Map" = "Moh505Map"
+
+// MOH 505 Health Facility Weekly Reporting Form QuestionnaireResponse to FHIR resources
+// Maps to: Encounter (facility + reporting period) and Observation per disease
+// PAGE 1: Reporting Site → Encounter
+// PAGE 2: Diseases, Conditions or Events → Observations (cases/deaths per disease)
+// PAGE 3: Laboratory Surveillance → Observations (malaria lab tests)
+
+uses "http://hl7.org/fhir/StructureDefinition/QuestionnaireResponse" alias QuestionnaireResponse as source
+uses "http://hl7.org/fhir/StructureDefinition/Bundle" alias Bundle as target
+uses "http://hl7.org/fhir/StructureDefinition/Encounter" alias Encounter as target
+uses "http://hl7.org/fhir/StructureDefinition/Observation" alias Observation as target
+uses "http://hl7.org/fhir/StructureDefinition/BackboneElement" alias BackboneElement as source
+
+group Moh505Map(source src : QuestionnaireResponse, target bundle : Bundle) {
+  src -> bundle.id = uuid() "bundleId";
+  src -> bundle.type = 'transaction' "bundleType";
+
+  // Create Encounter for the facility reporting context
+  src -> bundle.entry as e then {
+    src -> e.resource = create('Encounter') as encounter then MapMoh505Encounter(src, encounter) "execEncounter";
+    src -> e.request as req, req.method = 'POST', req.url = 'Encounter' "encounterReq";
+  } "encounterEntry";
+
+  // Create Observations per disease from PAGE 2
+  src.item as diseasesPage where linkId = '306799299' then {
+
+    // ── AEFI ────────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'aefi-summary' then {
+      diseasesPage.item as u5c where linkId = 'aefi-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'aefi-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'aefi-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'aefi-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "aefiObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "aefi";
+
+    // ── Bacterial Meningitis ─────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'bacterial-meningitis-summary' then {
+      diseasesPage.item as u5c where linkId = 'bacterial-meningitis-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'bacterial-meningitis-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'bacterial-meningitis-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'bacterial-meningitis-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "bactMenObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "bacterialMeningitis";
+
+    // ── Acute Jaundice ───────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'acute-jaundice-summary' then {
+      diseasesPage.item as u5c where linkId = 'acute-jaundice-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'acute-jaundice-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'acute-jaundice-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'acute-jaundice-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "ajObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "acuteJaundice";
+
+    // ── Acute Malnutrition ───────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'acute-malnutrition-summary' then {
+      diseasesPage.item as u5c where linkId = 'acute-malnutrition-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'acute-malnutrition-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'acute-malnutrition-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'acute-malnutrition-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "amObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "acuteMalnutrition";
+
+    // ── AFP (Poliomyelitis) ──────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'afp-poliomyelitis-summary' then {
+      diseasesPage.item as u5c where linkId = 'afp-poliomyelitis-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'afp-poliomyelitis-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'afp-poliomyelitis-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'afp-poliomyelitis-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "afpObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "afp";
+
+    // ── Anthrax ──────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'anthrax-summary' then {
+      diseasesPage.item as u5c where linkId = 'anthrax-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'anthrax-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'anthrax-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'anthrax-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "anthraxObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "anthrax";
+
+    // ── Cholera ──────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'cholera-summary' then {
+      diseasesPage.item as u5c where linkId = 'cholera-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'cholera-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'cholera-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'cholera-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "choleraObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "cholera";
+
+    // ── Chikungunya ──────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'chikungunya-summary' then {
+      diseasesPage.item as u5c where linkId = 'chikungunya-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'chikungunya-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'chikungunya-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'chikungunya-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "chikungunyaObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "chikungunya";
+
+    // ── COVID-19 ─────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'covid--19-summary' then {
+      diseasesPage.item as u5c where linkId = 'covid-19-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'covid-19-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'covid-19-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'covid-19-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "covidObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "covid19";
+
+    // ── Dengue ───────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'dengue-summary' then {
+      diseasesPage.item as u5c where linkId = 'dengue-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'dengue-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'dengue-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'dengue-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "dengueObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "dengue";
+
+    // ── Dysentery (Bacillary) ────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'dysentery-bacillary-summary' then {
+      diseasesPage.item as u5c where linkId = 'dysentery-bacillary-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'dysentery-bacillary-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'dysentery-bacillary-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'dysentery-bacillary-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "dysenteryObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "dysenteryBacillary";
+
+    // ── Guinea Worm Disease ──────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'guinea-worm-disease-summary' then {
+      diseasesPage.item as u5c where linkId = 'guinea-worm-disease-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'guinea-worm-disease-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'guinea-worm-disease-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'guinea-worm-disease-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "gwObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "guineaWorm";
+
+    // ── Measles ──────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'measles-summary' then {
+      diseasesPage.item as u5c where linkId = 'measles-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'measles-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'measles-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'measles-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "measlesObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "measles";
+
+    // ── Suspected Malaria ────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'suspected-malaria-summary' then {
+      diseasesPage.item as u5c where linkId = 'suspected-malaria-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'suspected-malaria-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'suspected-malaria-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'suspected-malaria-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "malariaObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "suspectedMalaria";
+
+    // ── VHF ──────────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'vhf-summary' then {
+      diseasesPage.item as u5c where linkId = 'vhf-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'vhf-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'vhf-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'vhf-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "vhfObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "vhf";
+
+    // ── Yellow Fever ─────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'yellow-fever-summary' then {
+      diseasesPage.item as u5c where linkId = 'yellow-fever-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'yellow-fever-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'yellow-fever-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'yellow-fever-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "yfObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "yellowFever";
+
+    // ── Typhoid ──────────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'typhoid-summary' then {
+      diseasesPage.item as u5c where linkId = 'typhoid-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'typhoid-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'typhoid-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'typhoid-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "typhoidObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "typhoid";
+
+    // ── Rift Valley Fever ────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'rift-valley-fever-summary' then {
+      diseasesPage.item as u5c where linkId = 'rift-valley-fever-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'rift-valley-fever-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'rift-valley-fever-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'rift-valley-fever-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "rvfObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "riftValleyFever";
+
+    // ── Zika Virus ───────────────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'zika-virus-summary' then {
+      diseasesPage.item as u5c where linkId = 'zika-virus-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'zika-virus-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'zika-virus-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'zika-virus-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "zikaObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "zikaVirus";
+
+    // ── Deaths Due to Malaria ────────────────────────────────────────────────
+    diseasesPage.item as summ where linkId = 'deaths-due-to-malaria-summary' then {
+      diseasesPage.item as u5c where linkId = 'deaths-due-to-malaria-cases-under-5' then {
+        diseasesPage.item as o5c where linkId = 'deaths-due-to-malaria-cases-over-5' then {
+          diseasesPage.item as u5d where linkId = 'deaths-due-to-malaria-deaths-under-5' then {
+            diseasesPage.item as o5d where linkId = 'deaths-due-to-malaria-deaths-over-5' then {
+              summ.answer first as ans where valueCoding.code = 'yes' -> bundle.entry as e then {
+              summ -> e.resource = create('Observation') as obs then CreateMoh505DiseaseObs(summ, u5c, o5c, u5d, o5d, obs) "obsCreate";
+              summ -> e.request as req, req.method = 'POST', req.url = 'Observation' "reqCreate";
+            } "malDeathObs";
+            } "o5d";
+          } "u5d";
+        } "o5c";
+      } "u5c";
+    } "deathsDueToMalaria";
+  } "diseasesPage";
+
+  // Create Observations from PAGE 3: Laboratory Surveillance
+  src.item as labPage where linkId = '3067992989898' then {
+    // Malaria Microscopy observations
+    labPage.item as u5Tested where linkId = 'malaria-tested-under-5' then {
+      labPage.item as o5Tested where linkId = 'malaria-tested-over-5' then {
+        labPage.item as u5Pos where linkId = 'malaria-positive-under-5' then {
+          labPage.item as o5Pos where linkId = 'malaria-positive-over-5' then {
+            src -> bundle.entry as e then {
+              src -> e.resource = create('Observation') as obs then MapMalariaLabObs(u5Tested, o5Tested, u5Pos, o5Pos, obs) "malariaLabCreate";
+              src -> e.request as req, req.method = 'POST', req.url = 'Observation' "malariaLabReq";
+            } "malariaLabObs";
+          } "o5Pos";
+        } "u5Pos";
+      } "o5Tested";
+    } "u5Tested";
+  } "labPage";
+}
+
+// Helper group: create Encounter from Moh505 Reporting Site page
+group MapMoh505Encounter(source src : QuestionnaireResponse, target encounter : Encounter) {
+  src -> encounter.id = uuid() "encounterId";
+  src -> encounter.status = 'finished' "status";
+  src -> encounter.class as cls then {
+    src -> cls.system = 'http://terminology.hl7.org/CodeSystem/v3-ActCode' "clsSys";
+    src -> cls.code = 'VR' "clsCode";
+    src -> cls.display = 'virtual' "clsDisplay";
+  } "class";
+
+  // Encounter type: weekly surveillance report
+  src -> encounter.type as type then {
+    src -> type.coding as cod then {
+      src -> cod.system = 'http://example.org/CodeSystem/encounter-type' "typeSys";
+      src -> cod.code = 'weekly-surveillance-report' "typeCode";
+      src -> cod.display = 'MOH 505 Weekly Surveillance Report' "typeDisplay";
+    } "typeCoding";
+  } "type";
+
+  // Location from reporting site
+  src.item as reportSite where linkId = '151479012557' then {
+    reportSite.item as item where linkId = '819946803677' then {
+      item.answer first as ans -> encounter.location as loc, loc.location as locRef, locRef.reference = ('Location/' + ans.valueReference.reference) "facilityLocation";
+    } "facilityLevelLocation";
+  } "reportSite";
+}
+
+// Helper group: create a disease weekly count Observation (all 4 age/outcome components)
+group CreateMoh505DiseaseObs(
+  source summaryItem : BackboneElement,
+  source u5CasesItem : BackboneElement,
+  source o5CasesItem : BackboneElement,
+  source u5DeathsItem : BackboneElement,
+  source o5DeathsItem : BackboneElement,
+  target obs : Observation
+) {
+  summaryItem -> obs.id = uuid() "obsId";
+  summaryItem -> obs.status = 'final' "status";
+  summaryItem -> obs.category as cat then {
+    summaryItem -> cat.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/observation-category', cod.code = 'survey' "catCod";
+  } "category";
+
+  // Disease code derived from the summary question text
+  summaryItem -> obs.code as code then {
+    summaryItem -> code.coding as cod then {
+      summaryItem -> cod.system = 'http://example.org/CodeSystem/moh505-disease' "codeSys";
+      summaryItem -> cod.code = (summaryItem.linkId.replace('-summary', '')) "codeCode";
+      summaryItem -> cod.display = (summaryItem.text) "codeDisplay";
+    } "codeCoding";
+    summaryItem -> code.text = (summaryItem.text) "codeText";
+  } "diseaseCode";
+
+  // Component: Under 5 Cases
+  u5CasesItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Under 5 Cases' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5CasesComp";
+
+  // Component: Over 5 Cases
+  o5CasesItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Over 5 Cases' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "o5CasesComp";
+
+  // Component: Under 5 Deaths
+  u5DeathsItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Under 5 Deaths' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5DeathsComp";
+
+  // Component: Over 5 Deaths
+  o5DeathsItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Over 5 Deaths' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "o5DeathsComp";
+}
+
+// Helper group: create Malaria Lab Surveillance Observation
+group MapMalariaLabObs(
+  source u5TestedItem : BackboneElement,
+  source o5TestedItem : BackboneElement,
+  source u5PosItem : BackboneElement,
+  source o5PosItem : BackboneElement,
+  target obs : Observation
+) {
+  u5TestedItem -> obs.id = uuid() "obsId";
+  u5TestedItem -> obs.status = 'final' "status";
+  u5TestedItem -> obs.category as cat then {
+    u5TestedItem -> cat.coding as cod, cod.system = 'http://terminology.hl7.org/CodeSystem/observation-category', cod.code = 'laboratory' "catCod";
+  } "category";
+
+  u5TestedItem -> obs.code as code then {
+    u5TestedItem -> code.coding as cod then {
+      u5TestedItem -> cod.system = 'http://loinc.org' "loincSys";
+      u5TestedItem -> cod.code = '32700-7' "loincCode";
+      u5TestedItem -> cod.display = 'Microscopy panel - Blood by Malaria smear' "loincDisplay";
+    } "codeCoding";
+    u5TestedItem -> code.text = 'Malaria Microscopy Results' "codeText";
+  } "labCode";
+
+  u5TestedItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Malaria Microscopy Tested Under 5' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5TestedComp";
+
+  o5TestedItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Malaria Microscopy Tested Over 5' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "o5TestedComp";
+
+  u5PosItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Malaria Microscopy Positive Under 5' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "u5PosComp";
+
+  o5PosItem.answer first as ans -> obs.component as comp then {
+    ans -> comp.code as code, code.text = 'Malaria Microscopy Positive Over 5' "compCode";
+    ans -> comp.valueInteger = ans.valueInteger "compValue";
+  } "o5PosComp";
+}
